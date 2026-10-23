@@ -1,0 +1,29 @@
+---
+description: Nursery Desk product brief, locked decisions, and phase discipline
+alwaysApply: true
+---
+
+# Nursery Desk
+
+Multi-school kindergarten SaaS. School A must never see School B's data.
+
+Roles: `super_admin` (plans, schools, usage only), `school_admin`, `teacher`, `parent`.
+
+## Locked decisions (do not reopen)
+
+- Stack: Vite + React + TypeScript + Tailwind. Custom UI from the HTML prototype. No MUI.
+- Classes: one `classes` row per teachable group (e.g. Nursery A, Nursery B) with `capacity` and `teacher_id`.
+- Super admin: `profiles.school_id` is nullable. RLS never returns student, guardian, invoice, or enquiry rows to `super_admin`.
+- Nav: match the prototype sidebar (Other fees and Collect payment are top-level). URLs may stay nested (`/admin/fees/other`).
+- Gender: Girl, Boy, Other. Admission fee is a per-school setting. No branches in v1.
+
+## Working rules
+
+1. One phase at a time. Phase 0 is setup, tokens, shared UI, shells, `/design`. Do not build admissions or fees yet.
+2. Every tenant table has `school_id` and RLS. Never trust the client for tenancy.
+3. Feature folders, not one giant components folder.
+4. Money is integer paise. Format with `formatINR()`. Dates in `en-IN`.
+5. No hardcoded school name, address, or logo. Read from `schools` (mock in a session module until Phase 1).
+6. Lists need loading, empty, and error states. Empty states say what to do next.
+7. Accessible by default: labels, visible focus rings, 4.5:1 contrast.
+8. TypeScript strict. No `any`. Match the HTML prototype for layout, spacing, and copy.

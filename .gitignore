@@ -1,0 +1,22 @@
+# Secrets and local env — never commit
+**/.env
+**/.env.*
+!**/.env.example
+**/*.local
+**/.neon
+
+# Dependencies and build output
+**/node_modules
+**/dist
+**/dist-ssr
+*.tsbuildinfo
+
+# Uploaded student files stay on the server, not in git
+**/uploads/*
+!**/uploads/.gitkeep
+
+# Logs and OS
+logs
+*.log
+.DS_Store
+Thumbs.db

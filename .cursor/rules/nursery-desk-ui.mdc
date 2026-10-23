@@ -1,0 +1,20 @@
+---
+description: Nursery Desk design tokens and UI component conventions
+globs: nursery-desk/src/**/*.{ts,tsx,css}
+alwaysApply: false
+---
+
+# UI
+
+Friendly classroom, not a grey admin template. Headings/numbers: Fredoka. Body: Nunito.
+
+Tokens live in `src/styles/tokens.css` (`--bg`, `--surface`, `--ink`, `--muted`, `--line`, `--primary`, `--primary-tint`, `--sun`, success/danger/warn). Support `data-theme` and `prefers-color-scheme`.
+
+- Cards: 18px radius, 1px `--line`, no heavy shadows
+- Buttons/inputs: 12px radius; pills fully rounded
+- Sidebar 230px; content max-width 1100px; padding 24px 28px (14px mobile)
+- Avatars: first initial on rotating pastels `#FFC93C #9FD8FF #FFB3C7 #A8E6C1 #C9B8FF #FFD3A0`
+- Shared pieces: `PageHeader`, `StatCard`, `StatusPill`, `FilterChips`, `DataTable`, `Avatar`, `ProgressBar`, `Toast`, `PrintSheet`
+- Toasts use the same verb as the button ("Save progress" → "Progress saved")
+- Tables scroll inside their container; the page never scrolls sideways
+- Respect `prefers-reduced-motion`
