@@ -1,35 +1,6 @@
-import type { IncomingMessage, ServerResponse } from 'node:http'
 import type { Plugin } from 'vite'
 import { app } from './app.ts'
-
-function readBody(req: IncomingMessage) {
-  return new Promise<Buffer>((resolve, reject) => {
-    const chunks: Buffer[] = []
-    req.on('data', (chunk) => chunks.push(chunk as Buffer))
-    req.on('end', () => resolve(Buffer.concat(chunks)))
-    req.on('error', reject)
-  })
-}
-
-async function handle(req: IncomingMessage, res: ServerResponse) {
-  const host = req.headers.host ?? 'localhost'
-  const url = `http://${host}${req.url ?? '/'}`
-  const headers = new Headers()
-  for (const [key, value] of Object.entries(req.headers)) {
-    if (!value) continue
-    headers.set(key, Array.isArray(value) ? value.join(', ') : value)
-  }
-
-  const method = req.method ?? 'GET'
-  const body = method === 'GET' || method === 'HEAD' ? undefined : await readBody(req)
-  const request = new Request(url, { method, headers, body })
-  const response = await app.fetch(request)
-  res.statusCode = response.status
-  response.headers.forEach((value, key) => {
-    res.setHeader(key, value)
-  })
-  res.end(Buffer.from(await response.arrayBuffer()))
-}
+import { pipeHonoToNode } from './http-node.ts'
 
 export function neonApiPlugin(): Plugin {
   return {
@@ -40,7 +11,7 @@ export function neonApiPlugin(): Plugin {
           next()
           return
         }
-        void handle(req, res).catch(next)
+        void pipeHonoToNode(app, req, res).catch(next)
       })
     },
     configurePreviewServer(server) {
@@ -49,7 +20,7 @@ export function neonApiPlugin(): Plugin {
           next()
           return
         }
-        void handle(req, res).catch(next)
+        void pipeHonoToNode(app, req, res).catch(next)
       })
     },
   }

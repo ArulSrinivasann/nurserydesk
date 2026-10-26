@@ -70,12 +70,20 @@ app.onError((error, c) => {
 })
 
 app.get('/api/health', async (c) => {
-  const rows = await db().select({ id: plans.id, name: plans.name }).from(plans)
-  return c.json({
-    ok: true,
-    branch: process.env.NEON_BRANCH ?? null,
-    planCount: rows.length,
-  })
+  if (!process.env.DATABASE_URL) {
+    return c.json({ ok: false, error: 'DATABASE_URL is missing.' }, 503)
+  }
+  try {
+    const rows = await db().select({ id: plans.id, name: plans.name }).from(plans)
+    return c.json({
+      ok: true,
+      branch: process.env.NEON_BRANCH ?? null,
+      planCount: rows.length,
+    })
+  } catch (error) {
+    console.error(error)
+    return c.json({ ok: false, error: 'Database is unreachable.' }, 503)
+  }
 })
 
 app.post('/api/auth/login', async (c) => {

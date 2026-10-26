@@ -1,0 +1,13 @@
+{
+  "name": "nurserydesk",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "postinstall": "npm install --prefix nursery-desk --include=dev",
+    "build": "npm run build --prefix nursery-desk",
+    "start": "npm start --prefix nursery-desk",
+    "test": "npm test --prefix nursery-desk"
+  }
+}
