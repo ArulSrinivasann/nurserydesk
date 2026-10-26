@@ -20,3 +20,31 @@ describe('/api/health', () => {
     expect(body.ok).toBe(false)
   })
 })
+
+describe('POST /api/auth/login', () => {
+  const originalUrl = process.env.DATABASE_URL
+  const originalSecret = process.env.SESSION_SECRET
+
+  afterEach(() => {
+    if (originalUrl === undefined) delete process.env.DATABASE_URL
+    else process.env.DATABASE_URL = originalUrl
+    if (originalSecret === undefined) delete process.env.SESSION_SECRET
+    else process.env.SESSION_SECRET = originalSecret
+  })
+
+  it('returns 503 when SESSION_SECRET is missing', async () => {
+    process.env.DATABASE_URL = 'postgres://preview'
+    delete process.env.SESSION_SECRET
+    const response = await app.request('/api/auth/login', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        email: 'rahul@littlesprouts.example',
+        password: 'NurseryDesk1!',
+      }),
+    })
+    expect(response.status).toBe(503)
+    const body = (await response.json()) as { error: string }
+    expect(body.error).toContain('SESSION_SECRET')
+  })
+})

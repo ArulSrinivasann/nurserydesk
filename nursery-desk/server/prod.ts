@@ -4,6 +4,9 @@ import { createReadStream, existsSync, statSync } from 'node:fs'
 import { createServer, type ServerResponse } from 'node:http'
 import { extname, join, resolve, sep } from 'node:path'
 import { app } from './app.ts'
+import { createDb } from './db/client.ts'
+import { runMigrations } from './db/migrate.ts'
+import { profiles } from './db/schema.ts'
 import { pipeHonoToNode } from './http-node.ts'
 
 config({ path: '.env.local' })
@@ -67,6 +70,24 @@ function sendFile(res: ServerResponse, file: string, method: string) {
   createReadStream(file).pipe(res)
 }
 
+async function prepareDatabase() {
+  if (!process.env.DATABASE_URL_UNPOOLED) {
+    console.error('DATABASE_URL_UNPOOLED is missing; skipping migrate/seed.')
+    return
+  }
+  await runMigrations()
+  const url = process.env.DATABASE_URL
+  if (!url) return
+  const database = createDb(url)
+  const [row] = await database.select({ id: profiles.id }).from(profiles).limit(1)
+  if (row) return
+  console.log('No users in the database; running demo seed')
+  const result = spawnSync('npm', ['run', 'db:seed'], { stdio: 'inherit', shell: true })
+  if (result.status !== 0) {
+    throw new Error('Demo seed failed.')
+  }
+}
+
 ensureDist()
 
 const server = createServer((req, res) => {
@@ -97,6 +118,12 @@ const server = createServer((req, res) => {
   const file = safeFile(path === '/' ? '/index.html' : path) ?? join(DIST, 'index.html')
   sendFile(res, file, method)
 })
+
+try {
+  await prepareDatabase()
+} catch (error) {
+  console.error('Database setup failed:', error)
+}
 
 server.listen(PORT, HOST, () => {
   console.log(`Nursery Desk listening on http://${HOST}:${PORT}`)

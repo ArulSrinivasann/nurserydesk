@@ -18,6 +18,19 @@ npm run dev
 
 Open [http://localhost:5173/login](http://localhost:5173/login).
 
+## Deploy (Node PaaS)
+
+The host must run **Node 22**, `npm run build`, then `npm start`. `start` binds `0.0.0.0` and `process.env.PORT`.
+
+Set these secrets on the host, then restart:
+
+- `DATABASE_URL`
+- `DATABASE_URL_UNPOOLED`
+- `SESSION_SECRET`
+- `NEON_BRANCH` (optional)
+
+Liveness: `GET /health`. Database check: `GET /api/health`.
+
 Demo password for every seeded user: `NurseryDesk1!`
 
 | Role | Email |

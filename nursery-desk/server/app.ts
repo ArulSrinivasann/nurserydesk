@@ -66,6 +66,13 @@ app.onError((error, c) => {
     return c.json({ error: error.message }, error.status)
   }
   console.error(error)
+  const message = error instanceof Error ? error.message : ''
+  if (message.includes('DATABASE_URL') || message.includes('SESSION_SECRET')) {
+    return c.json({ error: message }, 503)
+  }
+  if (/relation .* does not exist/i.test(message)) {
+    return c.json({ error: 'Database is not migrated. Run npm run db:migrate.' }, 503)
+  }
   return c.json({ error: 'Something went wrong.' }, 500)
 })
 
@@ -87,6 +94,12 @@ app.get('/api/health', async (c) => {
 })
 
 app.post('/api/auth/login', async (c) => {
+  if (!process.env.DATABASE_URL) {
+    throw new HTTPException(503, { message: 'DATABASE_URL is missing.' })
+  }
+  if (!process.env.SESSION_SECRET) {
+    throw new HTTPException(503, { message: 'SESSION_SECRET is missing.' })
+  }
   const body = await c.req.json<{ email?: string; password?: string }>()
   const email = body.email?.trim().toLowerCase() ?? ''
   const password = body.password ?? ''
