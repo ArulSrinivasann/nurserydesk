@@ -8,7 +8,7 @@ import { zodResolver } from '@/lib/zodResolver'
 import { ROLE_HOME } from '@/types/roles'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -45,7 +45,9 @@ export function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-10">
       <div className="w-full max-w-[520px]">
-        <Logo className="justify-center px-0 pb-6" />
+        <Link to="/" className="text-ink no-underline">
+          <Logo className="justify-center px-0 pb-6" />
+        </Link>
         <Card>
           <h1 className="mb-1">Sign in</h1>
           <p className="mt-0 mb-5 text-muted">Use a demo account. Password for all: NurseryDesk1!</p>

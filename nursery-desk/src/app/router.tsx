@@ -13,6 +13,7 @@ import { InvoicesPage } from '@/features/fees/InvoicesPage'
 import { OtherFeesPage } from '@/features/fees/OtherFeesPage'
 import { ParentFeesPage } from '@/features/parent/ParentFeesPage'
 import { ParentHomePage } from '@/features/parent/ParentHomePage'
+import { LandingPage } from '@/features/marketing/LandingPage'
 import { PlatformPlansPage, PlatformSchoolsPage } from '@/features/schools/PlatformPages'
 import { SchoolProfilePage } from '@/features/schools/SchoolProfilePage'
 import { AttendancePage } from '@/features/attendance/AttendancePage'
@@ -70,7 +71,7 @@ export function AppRouter() {
           <Route path="/platform/plans" element={<PlatformPlansPage />} />
         </Route>
       </Route>
-      <Route path="/" element={<Navigate to="/app" replace />} />
+      <Route path="/" element={<LandingPage />} />
       <Route path="*" element={<Navigate to="/app" replace />} />
     </Routes>
   )
