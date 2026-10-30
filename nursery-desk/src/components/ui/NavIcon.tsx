@@ -3,7 +3,7 @@ import {
   isChoosableIcon,
   useNavIconChoices,
 } from '@/components/ui/navIconChoices'
-import type { ReactNode, SVGProps } from 'react'
+import type { ReactNode } from 'react'
 
 export const NAV_ICON_NAMES = [
   'dashboard',
@@ -52,12 +52,12 @@ const FILLS: Record<NavIconName, string> = {
   plans: '#FFD3A0',
 }
 
-const outline: SVGProps<SVGPathElement> = {
+const outline = {
   fill: 'none',
   stroke: 'currentColor',
   strokeWidth: 1.65,
-  strokeLinecap: 'round',
-  strokeLinejoin: 'round',
+  strokeLinecap: 'round' as const,
+  strokeLinejoin: 'round' as const,
 }
 
 function fillLayer(fill: string, d: string) {

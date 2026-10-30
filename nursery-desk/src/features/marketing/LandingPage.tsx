@@ -454,7 +454,7 @@ function ParentPreview() {
 }
 
 function ProgressPreview() {
-  const rows = [
+  const rows: Array<[string, number]> = [
     ['Language', 4],
     ['Motor', 5],
     ['Social', 4],
