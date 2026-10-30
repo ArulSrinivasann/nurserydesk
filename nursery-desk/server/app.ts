@@ -20,9 +20,13 @@ import {
 } from './db/schema.ts'
 import { dashboard } from './routes/dashboard.ts'
 import { fees } from './routes/fees.ts'
+import { messages } from './routes/messages.ts'
 import { ops } from './routes/ops.ts'
 import { parent } from './routes/parent.ts'
 import { phase2 } from './routes/phase2.ts'
+import { platform } from './routes/platform.ts'
+import { staff } from './routes/staff.ts'
+import { createCaptcha, verifyCaptcha } from './captcha.ts'
 import { readUser, signUser, type AuthUser } from './session.ts'
 import type { Role } from '../src/types/roles.ts'
 
@@ -58,7 +62,10 @@ export const app = new Hono()
 app.route('/api', phase2)
 app.route('/api', dashboard)
 app.route('/api', fees)
+app.route('/api', messages)
 app.route('/api', parent)
+app.route('/api', platform)
+app.route('/api', staff)
 app.route('/api', ops)
 
 app.onError((error, c) => {
@@ -93,6 +100,15 @@ app.get('/api/health', async (c) => {
   }
 })
 
+app.get('/api/auth/captcha', (c) => {
+  if (!process.env.SESSION_SECRET) {
+    throw new HTTPException(503, { message: 'SESSION_SECRET is missing.' })
+  }
+  c.header('Cache-Control', 'no-store')
+  const { token, image } = createCaptcha()
+  return c.json({ token, image })
+})
+
 app.post('/api/auth/login', async (c) => {
   if (!process.env.DATABASE_URL) {
     throw new HTTPException(503, { message: 'DATABASE_URL is missing.' })
@@ -100,11 +116,24 @@ app.post('/api/auth/login', async (c) => {
   if (!process.env.SESSION_SECRET) {
     throw new HTTPException(503, { message: 'SESSION_SECRET is missing.' })
   }
-  const body = await c.req.json<{ email?: string; password?: string }>()
+  const body = await c.req.json<{
+    email?: string
+    password?: string
+    captchaToken?: string
+    captcha?: string
+  }>()
   const email = body.email?.trim().toLowerCase() ?? ''
   const password = body.password ?? ''
+  const captchaToken = body.captchaToken?.trim() ?? ''
+  const captcha = body.captcha ?? ''
   if (!email || !password) {
     throw new HTTPException(400, { message: 'Enter your email and password.' })
+  }
+  if (!captchaToken || !captcha.trim()) {
+    throw new HTTPException(400, { message: 'Enter the characters from the image.' })
+  }
+  if (!verifyCaptcha(captchaToken, captcha)) {
+    throw new HTTPException(400, { message: 'The image text is wrong. Try a new image.' })
   }
 
   const [profile] = await db().select().from(profiles).where(eq(profiles.email, email)).limit(1)

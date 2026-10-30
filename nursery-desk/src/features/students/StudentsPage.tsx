@@ -106,7 +106,7 @@ export function StudentsPage() {
                 key={row.id}
                 type="button"
                 className={`flex flex-col items-stretch gap-1.5 rounded-[14px] border-2 p-3 text-left ${
-                  classId === row.id ? 'border-primary bg-primary-tint' : 'border-line bg-surface'
+                  classId === row.id ? 'border-nav-active bg-nav-active-bg text-nav-active' : 'border-line bg-surface'
                 }`}
                 onClick={() => setClassId(row.id)}
               >
@@ -141,11 +141,19 @@ export function StudentsPage() {
               subtitle={`${klass.teacherName ?? 'No teacher'} · ${klass.childCount} children`}
               action={
                 classId === 'all' ? (
-                  <Button variant="alt" onClick={() => setClassId(klass.id)}>
+                  <Button
+                    variant="alt"
+                    className="bg-nav-active-bg font-semibold text-nav-active"
+                    onClick={() => setClassId(klass.id)}
+                  >
                     View class
                   </Button>
                 ) : (
-                  <Button variant="alt" onClick={() => setClassId('all')}>
+                  <Button
+                    variant="alt"
+                    className="bg-nav-active-bg font-semibold text-nav-active"
+                    onClick={() => setClassId('all')}
+                  >
                     Show all classes
                   </Button>
                 )

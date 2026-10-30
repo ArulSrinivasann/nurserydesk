@@ -357,3 +357,15 @@ export const paymentItems = pgTable('payment_items', {
     .references(() => invoiceItems.id),
   amountPaise: integer('amount_paise').notNull(),
 })
+
+export const demoRequests = pgTable('demo_requests', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  schoolName: text('school_name').notNull(),
+  contactName: text('contact_name').notNull(),
+  phone: text('phone').notNull(),
+  email: text('email').notNull(),
+  note: text('note'),
+  status: text('status').notNull().default('new'),
+  convertedSchoolId: uuid('converted_school_id').references(() => schools.id),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+})

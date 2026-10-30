@@ -7,7 +7,7 @@ const tones: Record<PillTone, string> = {
   success: 'bg-success-tint text-success',
   danger: 'bg-danger-tint text-danger',
   warn: 'bg-warn-tint text-warn-ink',
-  info: 'bg-primary-tint text-primary',
+  info: 'bg-nav-active-bg text-nav-active',
 }
 
 type Props = HTMLAttributes<HTMLSpanElement> & {

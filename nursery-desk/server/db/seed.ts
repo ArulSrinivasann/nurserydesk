@@ -118,23 +118,23 @@ await db
     {
       id: PLAN_STARTER,
       name: 'Starter',
-      pricePaise: 149900,
+      pricePaise: 349900,
       childLimit: 100,
       features: ['Attendance', 'Admissions', 'Announcements'],
     },
     {
       id: PLAN_GROWTH,
       name: 'Growth',
-      pricePaise: 349900,
+      pricePaise: 549900,
       childLimit: 250,
-      features: ['Fees', 'Receipts', 'Parent portal'],
+      features: ['Fees', 'Receipts'],
     },
     {
       id: PLAN_CAMPUS,
       name: 'Campus',
-      pricePaise: 799900,
+      pricePaise: 999900,
       childLimit: null,
-      features: ['Reports', 'Unlimited children'],
+      features: ['Parent portal', 'Reports', 'Unlimited children'],
     },
   ])
   .onConflictDoNothing()

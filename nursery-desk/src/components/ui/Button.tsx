@@ -8,8 +8,8 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 }
 
 const styles: Record<Variant, string> = {
-  primary: 'bg-primary text-on-primary',
-  alt: 'bg-primary-tint text-primary',
+  primary: 'bg-[#d49e72] font-black text-white',
+  alt: 'bg-primary-tint font-extrabold text-primary',
 }
 
 export function Button({ className, variant = 'primary', type = 'button', ...props }: Props) {
@@ -17,7 +17,7 @@ export function Button({ className, variant = 'primary', type = 'button', ...pro
     <button
       type={type}
       className={cn(
-        'cursor-pointer rounded-control border-0 px-4 py-2.5 font-extrabold disabled:cursor-not-allowed disabled:opacity-40',
+        'cursor-pointer rounded-control border-0 px-4 py-2.5 disabled:cursor-not-allowed disabled:opacity-40',
         styles[variant],
         className,
       )}

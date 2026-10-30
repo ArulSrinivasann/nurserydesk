@@ -1,8 +1,8 @@
 import { and, eq, inArray } from 'drizzle-orm'
-import { guardians, studentGuardians, students } from './db/schema.ts'
+import { guardians, profiles, studentGuardians, students } from './db/schema.ts'
 import { db } from './http.ts'
 
-export type NotifyKind = 'absence' | 'receipt' | 'announcement'
+export type NotifyKind = 'absence' | 'receipt' | 'announcement' | 'demo_request'
 
 export type NotifyRecipient = {
   name: string
@@ -12,7 +12,7 @@ export type NotifyRecipient = {
 
 export type NotifyEvent = {
   kind: NotifyKind
-  schoolId: string
+  schoolId: string | null
   to: NotifyRecipient
   subject: string
   body: string
@@ -81,6 +81,33 @@ export async function notifyReceipt(input: {
         to: { name: row.name, email: row.email, phone: row.phone },
         subject: `Fee receipt ${input.receiptNo}`,
         body: `Payment of ${input.amountLabel} was received. Receipt ${input.receiptNo} is ready.`,
+      }),
+    ),
+  )
+}
+
+export async function notifyDemoRequest(input: {
+  schoolName: string
+  contactName: string
+  email: string
+  phone: string
+}) {
+  const owners = await db()
+    .select({
+      fullName: profiles.fullName,
+      email: profiles.email,
+      phone: profiles.phone,
+    })
+    .from(profiles)
+    .where(eq(profiles.role, 'super_admin'))
+  await Promise.all(
+    owners.map((owner) =>
+      notify.send({
+        kind: 'demo_request',
+        schoolId: null,
+        to: { name: owner.fullName, email: owner.email, phone: owner.phone },
+        subject: `Demo request: ${input.schoolName}`,
+        body: `${input.contactName} (${input.email}, ${input.phone}) asked for a Nursery Desk demo for ${input.schoolName}.`,
       }),
     ),
   )

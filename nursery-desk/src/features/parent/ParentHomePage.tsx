@@ -34,7 +34,7 @@ type HomePayload = {
   learningStars?: number
   learningStarsDelta?: number
   timeline?: Array<{ id: string; time: string; body: string }>
-  announcements?: Array<{ id: string; title: string; body: string; kind: 'event' | 'holiday' }>
+  announcements?: Array<{ id: string; title: string; body: string; kind: 'event' | 'holiday' | 'alert' }>
   reportCards?: Array<{ termId: string; label: string; overall: number; overallLabel: string; isCurrent: boolean }>
 }
 
@@ -279,8 +279,8 @@ export function ParentHomePage() {
             <div className="mt-3 grid gap-3">
               {data.announcements.map((row) => (
                 <div key={row.id}>
-                  <Pill tone={row.kind === 'holiday' ? 'warn' : 'info'}>
-                    {row.kind === 'holiday' ? 'Holiday' : 'Event'}
+                  <Pill tone={row.kind === 'holiday' ? 'warn' : row.kind === 'alert' ? 'danger' : 'info'}>
+                    {row.kind === 'holiday' ? 'Holiday' : row.kind === 'alert' ? 'Alert' : 'Event'}
                   </Pill>{' '}
                   <b>{row.title}</b>
                   <div className="text-muted">{row.body}</div>

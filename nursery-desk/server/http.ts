@@ -34,3 +34,10 @@ export function requireParent(user: AuthUser) {
   }
   return user.schoolId
 }
+
+export function requireSuperAdmin(user: AuthUser) {
+  if (user.role !== 'super_admin') {
+    throw new HTTPException(403, { message: 'Platform owner only.' })
+  }
+  return user
+}

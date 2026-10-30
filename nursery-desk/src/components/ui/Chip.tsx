@@ -11,9 +11,9 @@ export function Chip({ className, active = false, type = 'button', ...props }: P
       type={type}
       aria-pressed={active}
       className={cn(
-        'cursor-pointer rounded-full border px-3.5 py-1.5 text-[13px] font-extrabold whitespace-nowrap',
+        'cursor-pointer rounded-full border px-3.5 py-1.5 text-[13px] font-semibold whitespace-nowrap',
         active
-          ? 'border-primary bg-primary-tint text-primary'
+          ? 'border-nav-active bg-nav-active-bg text-nav-active'
           : 'border-line bg-surface text-ink',
         className,
       )}

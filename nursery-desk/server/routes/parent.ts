@@ -13,6 +13,7 @@ import {
 } from '../../src/lib/attendance.ts'
 import { isParentPaymentMethod } from '../../src/lib/fees.ts'
 import { formatDate } from '../../src/lib/dates.ts'
+import { messageKind } from '../../src/lib/messages.ts'
 import { attendancePctByStudent, marksForDays, studentPct } from '../attendance.ts'
 import {
   academicYears,
@@ -41,8 +42,9 @@ function timeLabel(value: Date | string) {
 }
 
 function announcementKind(title: string, body: string) {
-  const text = `${title} ${body}`.toLowerCase()
-  if (text.includes('closed') || text.includes('holiday')) return 'holiday' as const
+  const kind = messageKind(title, body)
+  if (kind === 'holiday') return 'holiday' as const
+  if (kind === 'alert') return 'alert' as const
   return 'event' as const
 }
 
@@ -149,7 +151,13 @@ parent.get('/parent/home', async (c) => {
     .orderBy(desc(announcements.createdAt))
     .limit(10)
   const notices = noticeRows
-    .filter((row) => row.audience === 'all' || row.audience === child.classId || row.audience === klass?.name)
+    .filter(
+      (row) =>
+        row.audience === 'all' ||
+        row.audience === child.classId ||
+        row.audience === klass?.name ||
+        (child.classId != null && row.audience.split(',').includes(child.classId)),
+    )
     .map((row) => ({
       id: row.id,
       title: row.title,

@@ -18,7 +18,7 @@ export type SessionUser = {
 }
 
 export const ROLE_HOME: Record<Role, string> = {
-  super_admin: '/platform/schools',
+  super_admin: '/platform/demos',
   school_admin: '/admin/dashboard',
   teacher: '/teacher/attendance',
   parent: '/parent/home',

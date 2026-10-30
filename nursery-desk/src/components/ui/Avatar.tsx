@@ -2,10 +2,10 @@ import { cn } from '@/lib/cn'
 
 export const AVATAR_PASTELS = [
   '#FFC93C',
-  '#9FD8FF',
+  '#F3E6C8',
   '#FFB3C7',
   '#A8E6C1',
-  '#C9B8FF',
+  '#EBDCC4',
   '#FFD3A0',
 ] as const
 
@@ -32,7 +32,7 @@ export function Avatar({ name, index = 0, size = 'sm', className }: Props) {
     <span
       aria-hidden="true"
       className={cn(
-        'grid shrink-0 place-items-center rounded-full font-heading font-semibold text-[#1F2A5A]',
+        'grid shrink-0 place-items-center rounded-full font-heading font-semibold text-ink',
         sizes[size],
         className,
       )}

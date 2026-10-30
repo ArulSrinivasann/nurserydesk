@@ -1,10 +1,13 @@
+import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Pill } from '@/components/ui/Pill'
 import { Table } from '@/components/ui/Table'
+import { CreateSchoolForm } from '@/features/schools/CreateSchoolForm'
 import { api, ApiError } from '@/lib/api'
 import { formatINR } from '@/lib/money'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react'
 
 type SchoolRow = {
   id: string
@@ -24,6 +27,8 @@ type PlanRow = {
 }
 
 export function PlatformSchoolsPage() {
+  const queryClient = useQueryClient()
+  const [adding, setAdding] = useState(false)
   const query = useQuery({
     queryKey: ['platform-schools'],
     queryFn: () => api<{ schools: SchoolRow[] }>('/api/schools'),
@@ -47,10 +52,34 @@ export function PlatformSchoolsPage() {
 
   return (
     <>
-      <PageHeader title="Schools" subtitle="Subscriptions, usage and tenant health" />
+      <PageHeader
+        title="Schools"
+        subtitle="Subscriptions, usage and tenant health"
+        action={
+          adding ? null : (
+            <Button onClick={() => setAdding(true)}>Add school</Button>
+          )
+        }
+      />
+      {adding ? (
+        <div className="mb-4">
+          <CreateSchoolForm
+            onCreated={() => {
+              void queryClient.invalidateQueries({ queryKey: ['platform-schools'] })
+            }}
+            onDone={() => {
+              setAdding(false)
+              void queryClient.invalidateQueries({ queryKey: ['platform-schools'] })
+              void queryClient.invalidateQueries({ queryKey: ['demo-requests'] })
+            }}
+          />
+        </div>
+      ) : null}
       {query.data.schools.length === 0 ? (
         <Card>
-          <p className="m-0 text-muted">No schools yet. Seed the database, then refresh.</p>
+          <p className="m-0 text-muted">
+            No schools yet. Create one from a demo request, or add a school here.
+          </p>
         </Card>
       ) : (
         <Card>

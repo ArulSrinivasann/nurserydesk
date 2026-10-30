@@ -12,6 +12,8 @@
   --color-line: var(--line);
   --color-primary: var(--primary);
   --color-primary-tint: var(--primary-tint);
+  --color-nav-active: var(--nav-active);
+  --color-nav-active-bg: var(--nav-active-bg);
   --color-sun: var(--sun);
   --color-success: var(--success);
   --color-success-tint: var(--success-tint);
@@ -51,12 +53,20 @@ h3 {
   margin: 0;
 }
 
-button,
 input,
 select,
 textarea {
   font: inherit;
   color: inherit;
+}
+
+@layer base {
+  button {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-weight: inherit;
+  }
 }
 
 button:focus-visible,

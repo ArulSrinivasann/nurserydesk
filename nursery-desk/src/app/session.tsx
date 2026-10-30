@@ -13,7 +13,11 @@ import {
 type SessionContextValue = {
   user: SessionUser | null
   loading: boolean
-  signIn: (email: string, password: string) => Promise<void>
+  signIn: (
+    email: string,
+    password: string,
+    captcha: { token: string; answer: string },
+  ) => Promise<void>
   signOut: () => Promise<void>
   refresh: () => Promise<void>
 }
@@ -34,10 +38,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, [refresh])
 
   const signIn = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, password: string, captcha: { token: string; answer: string }) => {
       await api('/api/auth/login', {
         method: 'POST',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email,
+          password,
+          captchaToken: captcha.token,
+          captcha: captcha.answer,
+        }),
       })
       await refresh()
     },

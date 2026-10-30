@@ -105,7 +105,9 @@ export function DashboardPage() {
         <Card>
           <div className="mb-3.5 flex items-center justify-between gap-2">
             <h3>Attendance this week</h3>
-            <Pill tone="info">All classes</Pill>
+            <Pill tone="info" className="bg-nav-active-bg text-nav-active">
+              All classes
+            </Pill>
           </div>
           <div className="flex h-[150px] items-end gap-3">
             {data.week.map((day) => (
@@ -127,7 +129,11 @@ export function DashboardPage() {
         <Card>
           <div className="flex items-center justify-between gap-2">
             <h3>Class strength</h3>
-            <Button variant="alt" onClick={() => void navigate('/admin/classes')}>
+            <Button
+              variant="alt"
+              className="bg-nav-active-bg font-semibold text-nav-active"
+              onClick={() => void navigate('/admin/classes')}
+            >
               Manage classes
             </Button>
           </div>
